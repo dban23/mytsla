@@ -34,6 +34,8 @@ def index():
     <p>You are logged in.</p>
     <a href="/me">Get my data</a><br>
     <a href="/charging">Get charging data</a><br>
+    <a href="/vehicles">Get vehicles data</a><br>
+    <a href="/vehicle_data">Get my vehicle data</a><br>
     <a href="/logout">Logout</a>
     """
 
