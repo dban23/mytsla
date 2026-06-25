@@ -112,7 +112,7 @@ def me():
     )
 
 
-# ---------- 4. Call /api/1/dx/charging/history with user-context token ----------
+# ---------- 5. Call /api/1/dx/charging/history with user-context token ----------
 @app.route("/charging")
 def charging():
     access_token = session.get("access_token")
@@ -120,6 +120,54 @@ def charging():
         return redirect(url_for("login"))
 
     url = f"{TESLA_AUDIENCE}/api/1/dx/charging/history"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    resp = requests.get(url, headers=headers).json()
+    vin = resp["data"][0]["vin"]
+    return vin
+    # return jsonify(
+    #     {
+    #         "status_code": resp.status_code,
+    #         "body": resp.json() if resp.text else None,
+    #     }
+    # )
+
+
+# ---------- 6. Call /api/1/vehicles/{vin} with user-context token ----------
+@app.route("/vehicles")
+def vehicles():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = charging()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    resp = requests.get(url, headers=headers)
+    return jsonify(
+        {
+            "status_code": resp.status_code,
+            "body": resp.json() if resp.text else None,
+        }
+    )
+
+
+# ---------- 7. Call /api/1/vehicles/{vin}/vehicle_data with user-context token ----------
+@app.route("/vehicle_data")
+def vehicle_data():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = charging()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/vehicle_data"
     headers = {
         "Authorization": f"Bearer {access_token}",
     }
