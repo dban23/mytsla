@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 import json
 import requests
 from dotenv import load_dotenv
@@ -9,6 +10,35 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 AUDIENCE = "https://fleet-api.prd.eu.vn.cloud.tesla.com"
 DOMAIN = "dban23.github.io"
+
+
+TESLA_CLIENT_ID = os.getenv("TESLA_CLIENT_ID")
+TESLA_CLIENT_SECRET = os.getenv("TESLA_CLIENT_SECRET")
+TESLA_REDIRECT_URI = os.getenv("TESLA_REDIRECT_URI")
+TESLA_AUTH_URL = os.getenv("TESLA_AUTH_URL")
+TESLA_TOKEN_URL = os.getenv("TESLA_TOKEN_URL")
+TESLA_AUDIENCE = os.getenv("TESLA_AUDIENCE")
+TESLA_SCOPES = os.getenv("TESLA_SCOPES")
+
+
+def third_party_token():
+    url = "https://auth.tesla.com/oauth2/v3/authorize"
+
+    params = {
+        "client_id": TESLA_CLIENT_ID,
+        "redirect_uri": TESLA_REDIRECT_URI,
+        "response_type": "code",
+        "scope": TESLA_SCOPES,
+        "state": "random_state_value",
+    }
+
+    final_url = f"{url}?{urllib.parse.urlencode(params)}"
+
+    print(final_url)
+    # return redirect(final_url)
+
+
+third_party_token()
 
 
 def partner_auth_token():
@@ -69,9 +99,6 @@ def get_me():
     beaut_resp = json.dumps(response, indent=4, ensure_ascii=False)
 
     print(beaut_resp)
-
-
-get_me()
 
 
 def get_charging():

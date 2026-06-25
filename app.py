@@ -2,6 +2,7 @@ import os
 import urllib.parse
 from flask import Flask, redirect, request, session, url_for, jsonify
 import requests
+import secrets
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -31,7 +32,8 @@ def index():
     return """
     <h1>Tesla OAuth Demo</h1>
     <p>You are logged in.</p>
-    <a href="/me">Call /users/me</a><br>
+    <a href="/me">Get my data</a><br>
+    <a href="/charging">Get charging data</a><br>
     <a href="/logout">Logout</a>
     """
 
@@ -39,7 +41,7 @@ def index():
 # ---------- 2. Redirect user to Tesla login ----------
 @app.route("/login")
 def login():
-    state = "random_state_value"
+    state = secrets.token_urlsafe(32)
     session["oauth_state"] = state
 
     params = {
@@ -67,7 +69,6 @@ def callback():
     if not code:
         return "Missing code", 400
 
-    # Optional: verify state matches session["oauth_state"]
     if state != session.get("oauth_state"):
         return "Invalid state", 400
 
@@ -84,7 +85,6 @@ def callback():
         return f"Token exchange failed: {resp.status_code} {resp.text}", 400
 
     token_data = resp.json()
-    # token_data typically contains: access_token, refresh_token, id_token, expires_in, token_type
     session["access_token"] = token_data.get("access_token")
     session["refresh_token"] = token_data.get("refresh_token")
 
@@ -99,6 +99,27 @@ def me():
         return redirect(url_for("login"))
 
     url = f"{TESLA_AUDIENCE}/api/1/users/me"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    resp = requests.get(url, headers=headers)
+    return jsonify(
+        {
+            "status_code": resp.status_code,
+            "body": resp.json() if resp.text else None,
+        }
+    )
+
+
+# ---------- 4. Call /api/1/dx/charging/history with user-context token ----------
+@app.route("/charging")
+def charging():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    url = f"{TESLA_AUDIENCE}/api/1/dx/charging/history"
     headers = {
         "Authorization": f"Bearer {access_token}",
     }
