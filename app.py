@@ -33,8 +33,10 @@ def index():
     <h1>Tesla OAuth Demo</h1>
     <p>You are logged in.</p>
     <a href="/me">Get my data</a><br>
+    <a href="/drivers">Get drivers data</a><br>
+    <a href="/vin">Get vin data</a><br>
     <a href="/charging">Get charging data</a><br>
-    <a href="/vehicles">Get vehicles data</a><br>
+    <a href="/vehicle">Get vehicle data</a><br>
     <a href="/vehicle_data">Get my vehicle data</a><br>
     <a href="/logout">Logout</a>
     """
@@ -126,25 +128,40 @@ def charging():
         "Authorization": f"Bearer {access_token}",
     }
 
-    resp = requests.get(url, headers=headers).json()
-    vin = resp["data"][0]["vin"]
-    return vin
-    # return jsonify(
-    #     {
-    #         "status_code": resp.status_code,
-    #         "body": resp.json() if resp.text else None,
-    #     }
-    # )
+    resp = requests.get(url, headers=headers)
+    return jsonify(
+        {
+            "status_code": resp.status_code,
+            "body": resp.json() if resp.text else None,
+        }
+    )
 
 
 # ---------- 6. Call /api/1/vehicles/{vin} with user-context token ----------
-@app.route("/vehicles")
-def vehicles():
+@app.route("/vin")
+def get_vin():
     access_token = session.get("access_token")
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = charging()
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    resp = requests.get(url, headers=headers).json()
+    vin = resp["response"][0]["vin"]
+    return vin
+
+
+# ---------- 7. Call /api/1/vehicles/{vin} with user-context token ----------
+@app.route("/vehicle")
+def vehicle():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
 
     url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}"
     headers = {
@@ -160,16 +177,39 @@ def vehicles():
     )
 
 
-# ---------- 7. Call /api/1/vehicles/{vin}/vehicle_data with user-context token ----------
+# ---------- 8. Call /api/1/vehicles/{vin}/vehicle_data with user-context token ----------
 @app.route("/vehicle_data")
 def vehicle_data():
     access_token = session.get("access_token")
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = charging()
+    vin = get_vin()
 
     url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/vehicle_data"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    resp = requests.get(url, headers=headers)
+    return jsonify(
+        {
+            "status_code": resp.status_code,
+            "body": resp.json() if resp.text else None,
+        }
+    )
+
+
+# ---------- 9. Call /api/1/vehicles/{vin}/drivers with user-context token ----------
+@app.route("/drivers")
+def drivers():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/drivers"
     headers = {
         "Authorization": f"Bearer {access_token}",
     }

@@ -6,12 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-AUDIENCE = "https://fleet-api.prd.eu.vn.cloud.tesla.com"
-DOMAIN = "dban23.github.io"
-
-
+DOMAIN = "mytsla.onrender.com"
 TESLA_CLIENT_ID = os.getenv("TESLA_CLIENT_ID")
 TESLA_CLIENT_SECRET = os.getenv("TESLA_CLIENT_SECRET")
 TESLA_REDIRECT_URI = os.getenv("TESLA_REDIRECT_URI")
@@ -46,10 +41,10 @@ def partner_auth_token():
 
     payload = {
         "grant_type": "client_credentials",
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
+        "client_id": TESLA_CLIENT_ID,
+        "client_secret": TESLA_CLIENT_SECRET,
         "scope": "openid user_data vehicle_device_data vehicle_cmds vehicle_charging_cmds",
-        "audience": AUDIENCE,
+        "audience": TESLA_AUDIENCE,
     }
 
     auth_header = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -57,13 +52,12 @@ def partner_auth_token():
     response = requests.post(url, headers=auth_header, params=payload).json()
     access_token = response["access_token"]
 
-    # print(access_token)
     return access_token
 
 
 def register_acc():
     access_token = partner_auth_token()
-    url = f"{AUDIENCE}/api/1/partner_accounts"
+    url = f"{TESLA_AUDIENCE}/api/1/partner_accounts"
 
     pl = {"domain": "dban23.github.io"}
 
@@ -80,7 +74,7 @@ def register_acc():
 
 def check_pk():
     access_token = partner_auth_token()
-    url = f"{AUDIENCE}/api/1/partner_accounts/public_key?domain={DOMAIN}"
+    url = f"{TESLA_AUDIENCE}/api/1/partner_accounts/public_key?domain={DOMAIN}"
 
     auth_header = {"Authorization": f"Bearer {access_token}"}
 
@@ -91,7 +85,7 @@ def check_pk():
 
 def get_me():
     access_token = partner_auth_token()
-    url = f"{AUDIENCE}/api/1/users/me"
+    url = f"{TESLA_AUDIENCE}/api/1/users/me"
 
     auth_header = {"Authorization": f"Bearer {access_token}"}
 
@@ -103,7 +97,7 @@ def get_me():
 
 def get_charging():
     access_token = partner_auth_token()
-    url = f"{AUDIENCE}/api/1/dx/charging/history"
+    url = f"{TESLA_AUDIENCE}/api/1/dx/charging/history"
 
     auth_header = {"Authorization": f"Bearer {access_token}"}
 
@@ -120,8 +114,8 @@ def get_charging():
 def get_vehicle():
     access_token = partner_auth_token()
     # vin = get_charging()
-    url = f"{AUDIENCE}/api/1/vehicles/LRW3E7FS5RC310251/vehicle_data"
-    # url = f"{AUDIENCE}/api/1/users/region"
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles"
+    # url = f"{TESLA_AUDIENCE}/api/1/users/region"
 
     auth_header = {"Authorization": f"Bearer {access_token}"}
 
@@ -130,6 +124,8 @@ def get_vehicle():
 
     print(beaut_resp)
 
+
+get_vehicle()
 
 # get_me()
 # get_vehicle()
