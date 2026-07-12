@@ -24,16 +24,13 @@ def third_party_token():
         "redirect_uri": TESLA_REDIRECT_URI,
         "response_type": "code",
         "scope": TESLA_SCOPES,
-        "state": "random_state_value",
+        "state": "",
     }
 
     final_url = f"{url}?{urllib.parse.urlencode(params)}"
 
     print(final_url)
     # return redirect(final_url)
-
-
-third_party_token()
 
 
 def partner_auth_token():
@@ -59,7 +56,7 @@ def register_acc():
     access_token = partner_auth_token()
     url = f"{TESLA_AUDIENCE}/api/1/partner_accounts"
 
-    pl = {"domain": "dban23.github.io"}
+    pl = {"domain": ""}
 
     auth_header = {
         "Content-Type": "application/json",

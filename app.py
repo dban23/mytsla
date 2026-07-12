@@ -1,6 +1,6 @@
 import os
 import urllib.parse
-from flask import Flask, redirect, request, session, url_for, jsonify
+from flask import Flask, redirect, request, session, url_for, jsonify, render_template
 import requests
 import secrets
 from dotenv import load_dotenv
@@ -19,7 +19,6 @@ TESLA_AUDIENCE = os.getenv("TESLA_AUDIENCE")
 TESLA_SCOPES = os.getenv("TESLA_SCOPES")
 
 
-# ---------- 1. Home ----------
 @app.route("/")
 def index():
     access_token = session.get("access_token")
@@ -29,20 +28,9 @@ def index():
         <p>You are not logged in.</p>
         <a href="/login">Login with Tesla</a>
         """
-    return """
-    <h1>Tesla OAuth Demo</h1>
-    <p>You are logged in.</p>
-    <a href="/me">Get my data</a><br>
-    <a href="/drivers">Get drivers data</a><br>
-    <a href="/vin">Get vin data</a><br>
-    <a href="/charging">Get charging data</a><br>
-    <a href="/vehicle">Get vehicle data</a><br>
-    <a href="/vehicle_data">Get my vehicle data</a><br>
-    <a href="/logout">Logout</a>
-    """
+    return render_template("index.html")
 
 
-# ---------- 2. Redirect user to Tesla login ----------
 @app.route("/login")
 def login():
     state = secrets.token_urlsafe(32)
@@ -60,7 +48,6 @@ def login():
     return redirect(url)
 
 
-# ---------- 3. Handle callback & exchange code for tokens ----------
 @app.route("/callback")
 def callback():
     error = request.args.get("error")
@@ -95,7 +82,6 @@ def callback():
     return redirect(url_for("index"))
 
 
-# ---------- 4. Call /api/1/users/me with user-context token ----------
 @app.route("/me")
 def me():
     access_token = session.get("access_token")
@@ -116,7 +102,6 @@ def me():
     )
 
 
-# ---------- 5. Call /api/1/dx/charging/history with user-context token ----------
 @app.route("/charging")
 def charging():
     access_token = session.get("access_token")
@@ -137,7 +122,6 @@ def charging():
     )
 
 
-# ---------- 6. Call /api/1/vehicles/{vin} with user-context token ----------
 @app.route("/vin")
 def get_vin():
     access_token = session.get("access_token")
@@ -154,7 +138,6 @@ def get_vin():
     return vin
 
 
-# ---------- 7. Call /api/1/vehicles/{vin} with user-context token ----------
 @app.route("/vehicle")
 def vehicle():
     access_token = session.get("access_token")
@@ -177,7 +160,6 @@ def vehicle():
     )
 
 
-# ---------- 8. Call /api/1/vehicles/{vin}/vehicle_data with user-context token ----------
 @app.route("/vehicle_data")
 def vehicle_data():
     access_token = session.get("access_token")
@@ -200,7 +182,6 @@ def vehicle_data():
     )
 
 
-# ---------- 9. Call /api/1/vehicles/{vin}/drivers with user-context token ----------
 @app.route("/drivers")
 def drivers():
     access_token = session.get("access_token")
@@ -223,7 +204,6 @@ def drivers():
     )
 
 
-# # ---------- 5. Refresh token endpoint (optional) ----------
 # @app.route("/refresh")
 # def refresh():
 #     refresh_token = session.get("refresh_token")
@@ -248,13 +228,11 @@ def drivers():
 #     return jsonify(token_data)
 
 
-# ---------- 6. Logout ----------
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("index"))
 
 
-# ---------- Run ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
