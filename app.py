@@ -23,11 +23,7 @@ TESLA_SCOPES = os.getenv("TESLA_SCOPES")
 def index():
     access_token = session.get("access_token")
     if not access_token:
-        return """
-        <h1>Tesla OAuth Demo</h1>
-        <p>You are not logged in.</p>
-        <a href="/login">Login with Tesla</a>
-        """
+        return render_template("not_logged.html")
     return render_template("index.html")
 
 
