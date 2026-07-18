@@ -19,7 +19,7 @@ def charge(resp):
     #     }
     # )
     try:
-        charging_data = resp["body"]["response"]["charge_state"]
+        charging_data = resp["response"]["charge_state"]
         # charging_data = resp["body"]["response"]["charge_state"]
         return charging_data
     except KeyError:
