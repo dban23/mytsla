@@ -157,8 +157,8 @@ def vehicle():
     )
 
 
-@app.route("/vehicle_data")
-def vehicle_data():
+@app.route("/monitor_charging")
+def monitor_charging():
     access_token = session.get("access_token")
     if not access_token:
         return redirect(url_for("login"))
