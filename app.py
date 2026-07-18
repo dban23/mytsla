@@ -170,7 +170,7 @@ def vehicle_data():
         "Authorization": f"Bearer {access_token}",
     }
 
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=headers).json()
 
     return charge(resp)
     # return jsonify(
