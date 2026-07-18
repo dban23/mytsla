@@ -18,6 +18,9 @@ def charge(resp):
     #         "body": resp.json() if resp.text else None,
     #     }
     # )
-
-    charging_data = resp["body"]["response"]["charge_state"]
-    return charging_data
+    try:
+        charging_data = resp["body"]["response"]["charge_state"]
+        # charging_data = resp["body"]["response"]["charge_state"]
+        return charging_data
+    except KeyError:
+        return resp
