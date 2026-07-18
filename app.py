@@ -4,6 +4,7 @@ from flask import Flask, redirect, request, session, url_for, jsonify, render_te
 import requests
 import secrets
 from dotenv import load_dotenv
+from charging import charge
 
 load_dotenv()
 
@@ -170,12 +171,14 @@ def vehicle_data():
     }
 
     resp = requests.get(url, headers=headers)
-    return jsonify(
-        {
-            "status_code": resp.status_code,
-            "body": resp.json() if resp.text else None,
-        }
-    )
+
+    return charge(resp)
+    # return jsonify(
+    #     {
+    #         "status_code": resp.status_code,
+    #         "body": resp.json() if resp.text else None,
+    #     }
+    # )
 
 
 @app.route("/drivers")
