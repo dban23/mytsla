@@ -13,14 +13,17 @@
         <br>
 
         {% if page == "me" %}
-        <div>{{ me_resp }}</div>
+        <div>{{ data }}</div>
         <br>
 
-        {% else page == "monitor_charging" %}
+        {% elif page == "monitor_charging" %}
         <div>{{ charging_data }}</div><br>
         <br>
         <a href="/vehicle_data">Get full vehicle data</a><br>
         <br>
+
+        {% else %}
+            <p> Unknown page </p>
         {% endif %}
 
         <a href="/">Return to homepage</a><br>
