@@ -12,15 +12,15 @@
         <p>My page for using Tesla Fleet API.</p>
         <br>
 
-        {% if data == charging_message %}
-        <div>{{ charging_message }}</div>
+        {% if page == "me" %}
+        <div>{{ me_resp }}</div>
+        <br>
+
+        {% else page == "monitor_charging" %}
+        <div>{{ charging_data }}</div><br>
         <br>
         <a href="/vehicle_data">Get full vehicle data</a><br>
         <br>
-
-        {% else %}
-        <p>must finish else part</p>
-
         {% endif %}
 
         <a href="/">Return to homepage</a><br>

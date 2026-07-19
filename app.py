@@ -89,14 +89,14 @@ def me():
         "Authorization": f"Bearer {access_token}",
     }
 
-    resp = requests.get(url, headers=headers)
+    me_resp = requests.get(url, headers=headers).json()
     # return jsonify(
     #     {
     #         "status_code": resp.status_code,
     #         "body": resp.json() if resp.text else None,
     #     }
     # )
-    return render_template("data.html")
+    return render_template("data.html", data=me_resp, page="me")
 
 
 @app.route("/charging")
@@ -200,10 +200,14 @@ def monitor_charging():
             charging_message = (
                 f"Charging stopped, currently added:  {amount_charged} kWh"
             )
-            return render_template("data.html", data=charging_message)
+            return render_template(
+                "data.html", data=charging_message, page="monitor_charging"
+            )
         else:
             charging_message = f"Still charging, currently added:  {amount_charged} kWh"
-            return render_template("data.html", data=charging_message)
+            return render_template(
+                "data.html", data=charging_message, page="monitor_charging"
+            )
     except KeyError:
         return resp
     except TypeError:
