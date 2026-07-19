@@ -13,11 +13,14 @@
         <br>
 
         {% if page == "me" %}
-        <div>{{ data }}</div>
-        <br>
+        <div class="card">
+            <h3> My info </h3>
+            <div class="item">Full Name: <span>{{ data.response.full_name }}</span></div>
+            <div class="item">E-mail: <span>{{ data.response.email }}</span></div>
+        </div>
 
         {% elif page == "monitor_charging" %}
-        <div>{{ charging_data }}</div><br>
+        <div>{{ data }}</div><br>
         <br>
         <a href="/vehicle_data">Get full vehicle data</a><br>
         <br>
