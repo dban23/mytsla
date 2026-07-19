@@ -11,10 +11,13 @@
     <h1>Crna strijela</h1>
         <p>My page for using Tesla Fleet API.</p>
         <br>
-        <div>{{ message }}</div>
+
+        {% if data == charging_message %}
+        <div>{{ charging_message }}</div>
         <br>
         <a href="/vehicle_data">Get full vehicle data</a><br>
         <br>
+        
         <a href="/">Return to homepage</a><br>
         <br>
         <a href="/logout">Logout</a>

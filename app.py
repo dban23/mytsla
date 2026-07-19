@@ -90,12 +90,13 @@ def me():
     }
 
     resp = requests.get(url, headers=headers)
-    return jsonify(
-        {
-            "status_code": resp.status_code,
-            "body": resp.json() if resp.text else None,
-        }
-    )
+    # return jsonify(
+    #     {
+    #         "status_code": resp.status_code,
+    #         "body": resp.json() if resp.text else None,
+    #     }
+    # )
+    return render_template("data.html")
 
 
 @app.route("/charging")
@@ -196,11 +197,13 @@ def monitor_charging():
     try:
         amount_charged = resp["response"]["charge_state"]["charge_energy_added"]
         if resp["response"]["charge_state"]["charging_state"] == "Stopped":
-            message = f"Charging stopped, currently added:  {amount_charged} kWh"
-            return render_template("charging.html", message=message)
+            charging_message = (
+                f"Charging stopped, currently added:  {amount_charged} kWh"
+            )
+            return render_template("data.html", data=charging_message)
         else:
-            message = f"Still charging, currently added:  {amount_charged} kWh"
-            return render_template("charging.html", message=message)
+            charging_message = f"Still charging, currently added:  {amount_charged} kWh"
+            return render_template("data.html", data=charging_message)
     except KeyError:
         return resp
     except TypeError:
