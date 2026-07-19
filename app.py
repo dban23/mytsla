@@ -131,8 +131,12 @@ def get_vin():
     }
 
     resp = requests.get(url, headers=headers).json()
-    vin = resp["response"][0]["vin"]
-    return vin
+
+    try:
+        vin = resp["response"][0]["vin"]
+        return vin
+    except KeyError:
+        return resp
 
 
 @app.route("/vehicle")
@@ -173,12 +177,6 @@ def monitor_charging():
     resp = requests.get(url, headers=headers).json()
 
     return charge(resp)
-    # return jsonify(
-    #     {
-    #         "status_code": resp.status_code,
-    #         "body": resp.json() if resp.text else None,
-    #     }
-    # )
 
 
 @app.route("/drivers")
