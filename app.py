@@ -161,6 +161,24 @@ def vehicle():
     )
 
 
+@app.route("/vehicle_data")
+def vehicle_data():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/vehicle_data"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    resp = requests.get(url, headers=headers).json()
+
+    return resp
+
+
 @app.route("/monitor_charging")
 def monitor_charging():
     access_token = session.get("access_token")
