@@ -4,7 +4,6 @@ from flask import Flask, redirect, request, session, url_for, jsonify, render_te
 import requests
 import secrets
 from dotenv import load_dotenv
-from charging import charge
 
 load_dotenv()
 
@@ -194,7 +193,18 @@ def monitor_charging():
 
     resp = requests.get(url, headers=headers).json()
 
-    return charge(resp)
+    try:
+        amount_charged = resp["response"]["charge_state"]["charge_energy_added"]
+        if resp["response"]["charge_state"]["charging_state"] == "Stopped":
+            message = f"Charging stopped, currently added:  {amount_charged} kWh"
+            return render_template("charging.html", message=message)
+        else:
+            message = f"Still charging, currently added:  {amount_charged} kWh"
+            return render_template("charging.html", message=message)
+    except KeyError:
+        return resp
+    except TypeError:
+        return resp
 
 
 @app.route("/drivers")
