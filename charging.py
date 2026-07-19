@@ -12,3 +12,5 @@ def charge(resp):
             return render_template("charging.html", message=message)
     except KeyError:
         return resp
+    except TypeError:
+        return resp
