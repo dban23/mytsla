@@ -1,0 +1,13 @@
+.card {
+    background: #004d00;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    font-family: Arial;
+}
+.item {
+    margin: 10px 0;
+}
+.item span {
+    font-weight: bold;
+}
