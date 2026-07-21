@@ -96,8 +96,7 @@ def me():
     #         "body": resp.json() if resp.text else None,
     #     }
     # )
-    return me_resp
-    # return render_template("data.html", data=me_resp, page="me")
+    return render_template("data.html", data=me_resp, page="me")
 
 
 @app.route("/charging")

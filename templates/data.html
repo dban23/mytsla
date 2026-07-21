@@ -12,28 +12,29 @@
         <p>My page for using Tesla Fleet API.</p>
         <br>
 
-        <!-- {% if page == "me" %} -->
-        <!-- <div class="card"> -->
-        <!--     <h3> Owner info </h3> -->
-        <!--     <div class="item">Full Name: <span>{{ data.response.full_name }}</span></div> -->
-        <!--     <div class="item">E-mail: <span>{{ data.response.email }}</span></div> -->
-        <!-- </div> -->
-        <!-- <br> -->
+        {% if page == "me" %}
+        <div class="card">
+            <h3> Owner info </h3>
+            <div class="item">Full Name: <span>{{ data.response.full_name }}</span></div>
+            <div class="item">E-mail: <span>{{ data.response.email }}</span></div>
+        </div>
 
-        {% if page == "drivers" %}
+        {% elif page == "drivers" %}
         <div class="card">
             <h3> Drivers info </h3>
             <div class="item">First Name: <span>{{ data.response.driver_first_name }}</span></div>
             <div class="item">Last Name: <span>{{ data.response.driver_last_name }}</span></div>
             <div class="item">User ID: <span>{{ data.response.user_id }}</span></div>
         </div>
-        <br>
 
         {% elif page == "monitor_charging" %}
-        <div>{{ data }}</div><br>
+        <div class= "card">
+            <h3> Charging status </h3>
+            <div class="item"><span>{{ data }}</span></div>
+        </div>
+        <br>
         <br>
         <a href="/vehicle_data">Get full vehicle data</a><br>
-        <br>
 
         {% else %}
             <p> Unknown page </p>

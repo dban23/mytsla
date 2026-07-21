@@ -1,5 +1,9 @@
+body {
+    background-color #003300;
+}
+
 .card {
-    background: #004d00;
+    background: #b3ffb3;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
