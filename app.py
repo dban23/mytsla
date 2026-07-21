@@ -96,7 +96,8 @@ def me():
     #         "body": resp.json() if resp.text else None,
     #     }
     # )
-    return render_template("data.html", data=me_resp, page="me")
+    return me_resp
+    # return render_template("data.html", data=me_resp, page="me")
 
 
 @app.route("/charging")
@@ -227,13 +228,15 @@ def drivers():
         "Authorization": f"Bearer {access_token}",
     }
 
-    resp = requests.get(url, headers=headers)
-    return jsonify(
-        {
-            "status_code": resp.status_code,
-            "body": resp.json() if resp.text else None,
-        }
-    )
+    driver_resp = requests.get(url, headers=headers).json()
+    # return jsonify(
+    #     {
+    #         "status_code": resp.status_code,
+    #         "body": resp.json() if resp.text else None,
+    #     }
+    # )
+
+    return render_template("data.html", data=driver_resp, page="drivers")
 
 
 # @app.route("/refresh")

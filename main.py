@@ -92,6 +92,9 @@ def get_me():
     print(beaut_resp)
 
 
+get_me()
+
+
 def get_charging():
     access_token = partner_auth_token()
     url = f"{TESLA_AUDIENCE}/api/1/dx/charging/history"
