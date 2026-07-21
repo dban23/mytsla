@@ -22,9 +22,9 @@
         {% elif page == "drivers" %}
         <div class="card">
             <h3> Drivers info </h3>
-            <div class="item">First Name: <span>{{ data.response.driver_first_name }}</span></div>
-            <div class="item">Last Name: <span>{{ data.response.driver_last_name }}</span></div>
-            <div class="item">User ID: <span>{{ data.response.user_id }}</span></div>
+            <div class="item">First Name: <span>{{ data.response[0].driver_first_name }}</span></div>
+            <div class="item">Last Name: <span>{{ data.response[0].driver_last_name }}</span></div>
+            <div class="item">User ID: <span>{{ data.response[0].user_id }}</span></div>
         </div>
 
         {% elif page == "monitor_charging" %}
