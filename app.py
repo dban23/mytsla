@@ -125,63 +125,12 @@ def get_my_vehicles():
     if not access_token:
         return redirect(url_for("login"))
 
-        # url = f"{TESLA_AUDIENCE}/api/1/vehicles"
-        # headers = {
-        #     "Authorization": f"Bearer {access_token}",
-        # }
-        #
-        # json_resp = requests.get(url, headers=headers).json()
-    json_resp = {
-        "count": 1,
-        "pagination": {
-            "count": 1,
-            "current": 1,
-            "next": None,
-            "pages": 1,
-            "per_page": 1,
-            "previous": None,
-        },
-        "response": [
-            {
-                "access_type": "OWNER",
-                "api_version": 90,
-                "backseat_token": None,
-                "backseat_token_updated_at": None,
-                "ble_autopair_enrolled": False,
-                "calendar_enabled": True,
-                "color": None,
-                "display_name": "Crna strijela",
-                "granular_access": {"hide_private": False},
-                "id": 929433826162457,
-                "id_s": "929433826162457",
-                "in_service": False,
-                "option_codes": None,
-                "state": "online",
-                "tokens": None,
-                "vehicle_id": 1689402998582296,
-                "vin": "LRW3E7FS5RC310251",
-            },
-            {
-                "access_type": "OWNER",
-                "api_version": 90,
-                "backseat_token": None,
-                "backseat_token_updated_at": None,
-                "ble_autopair_enrolled": False,
-                "calendar_enabled": True,
-                "color": None,
-                "display_name": "drugi auto",
-                "granular_access": {"hide_private": False},
-                "id": 929433826162457,
-                "id_s": "929433826162457",
-                "in_service": False,
-                "option_codes": None,
-                "state": "online",
-                "tokens": None,
-                "vehicle_id": 9871234132451,
-                "vin": "LRW3sdfste45763567",
-            },
-        ],
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
     }
+
+    json_resp = requests.get(url, headers=headers).json()
 
     resp = json_resp["response"]
     vehicle_data = []
