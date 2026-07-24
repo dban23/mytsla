@@ -130,9 +130,16 @@ def get_my_vehicles():
         "Authorization": f"Bearer {access_token}",
     }
 
-    resp = requests.get(url, headers=headers).json()
+    json_resp = requests.get(url, headers=headers).json()
+    resp = json_resp["response"]
 
-    return resp
+    for i in range(len(resp)):
+        vehicle_data = {
+            "display_name": resp[i]["display_name"],
+            "vehicle_id": resp[i]["vehicle_id"],
+            "vin": resp[i]["vin"],
+        }
+        return vehicle_data
 
 
 @app.route("/vin")
