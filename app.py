@@ -184,14 +184,17 @@ def get_my_vehicles():
     }
 
     resp = json_resp["response"]
+    vehicle_data = []
 
     for i in range(len(resp)):
-        vehicle_data = {
+        data = {
             "display_name": resp[i]["display_name"],
             "vehicle_id": resp[i]["vehicle_id"],
             "vin": resp[i]["vin"],
         }
-        return vehicle_data
+        vehicle_data.append(data)
+
+    return vehicle_data
 
 
 @app.route("/vin")
