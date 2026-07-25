@@ -78,6 +78,11 @@ def callback():
     return redirect(url_for("index"))
 
 
+@app.route("/session")
+def ses():
+    return session
+
+
 @app.route("/me")
 def me():
     access_token = session.get("access_token")
@@ -305,4 +310,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)
