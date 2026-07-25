@@ -1,6 +1,6 @@
 import os
 import urllib.parse
-from flask import Flask, redirect, request, session, url_for, jsonify, render_template
+from flask import Flask, redirect, request, session, url_for, render_template
 import requests
 import secrets
 from dotenv import load_dotenv
@@ -78,11 +78,6 @@ def callback():
     return redirect(url_for("index"))
 
 
-@app.route("/session")
-def ses():
-    return jsonify(dict(session))
-
-
 @app.route("/me")
 def me():
     access_token = session.get("access_token")
@@ -110,13 +105,8 @@ def charging():
         "Authorization": f"Bearer {access_token}",
     }
 
-    resp = requests.get(url, headers=headers)
-    return jsonify(
-        {
-            "status_code": resp.status_code,
-            "body": resp.json() if resp.text else None,
-        }
-    )
+    resp = requests.get(url, headers=headers).json()
+    return resp
 
 
 @app.route("/my_vehicles")
@@ -164,28 +154,6 @@ def get_vin():
         return vin
     except KeyError:
         return resp
-
-
-@app.route("/vehicle")
-def vehicle():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    resp = requests.get(url, headers=headers)
-    return jsonify(
-        {
-            "status_code": resp.status_code,
-            "body": resp.json() if resp.text else None,
-        }
-    )
 
 
 @app.route("/vehicle_data")
@@ -255,10 +223,6 @@ def monitor_charging():
             return render_template(
                 "data.html", data=charging_message, page="monitor_charging"
             )
-    # except KeyError:
-    #     return resp
-    # except TypeError:
-    #     return resp
 
 
 @app.route("/drivers")
