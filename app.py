@@ -90,12 +90,7 @@ def me():
     }
 
     me_resp = requests.get(url, headers=headers).json()
-    # return jsonify(
-    #     {
-    #         "status_code": resp.status_code,
-    #         "body": resp.json() if resp.text else None,
-    #     }
-    # )
+
     return render_template("data.html", data=me_resp, page="me")
 
 
@@ -136,14 +131,14 @@ def get_my_vehicles():
     vehicle_data = []
 
     for i in range(len(resp)):
-        data = {
+        new_data = {
             "display_name": resp[i]["display_name"],
             "vehicle_id": resp[i]["vehicle_id"],
             "vin": resp[i]["vin"],
         }
-        vehicle_data.append(data)
+        vehicle_data.append(new_data)
 
-    return vehicle_data
+    return render_template("data.html", data=vehicle_data, page="my_vehicles")
 
 
 @app.route("/vin")
@@ -225,13 +220,25 @@ def monitor_charging():
         amount_charged = resp["response"]["charge_state"]["charge_energy_added"]
         if resp["response"]["charge_state"]["charging_state"] == "Stopped":
             charging_message = (
-                f"Charging stopped, currently added:  {amount_charged} kWh"
+                f"Charging stopped, currently added:  {amount_charged} kWh."
             )
             return render_template(
                 "data.html", data=charging_message, page="monitor_charging"
             )
+        elif resp["response"]["charge_state"]["charging_state"] == "Complete":
+            charging_message = f"Charging finished, added:  {amount_charged} kWh."
+            return render_template(
+                "data.html", data=charging_message, page="monitor_charging"
+            )
+        elif resp["response"]["charge_state"]["charging_state"] == "Disconnected":
+            charging_message = "The car is not charging."
+            return render_template(
+                "data.html", data=charging_message, page="monitor_charging"
+            )
         else:
-            charging_message = f"Still charging, currently added:  {amount_charged} kWh"
+            charging_message = (
+                f"Still charging, currently added:  {amount_charged} kWh."
+            )
             return render_template(
                 "data.html", data=charging_message, page="monitor_charging"
             )
@@ -255,12 +262,6 @@ def drivers():
     }
 
     driver_resp = requests.get(url, headers=headers).json()
-    # return jsonify(
-    #     {
-    #         "status_code": resp.status_code,
-    #         "body": resp.json() if resp.text else None,
-    #     }
-    # )
 
     return render_template("data.html", data=driver_resp, page="drivers")
 

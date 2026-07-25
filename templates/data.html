@@ -27,12 +27,19 @@
             <div class="item">User ID: <span>{{ data.response[0].user_id }}</span></div>
         </div>
 
+        {% elif page == "my_vehicles" %}
+        <div class="card">
+            <h3> My vehicles </h3>
+            <div class="item">Display name: <span>{{ data[0].display_name }}</span></div>
+            <div class="item">Vehicle ID: <span>{{ data[0].vehicle_id }}</span></div>
+            <div class="item">VIN: <span>{{ data[0].display_name }}</span></div>
+        </div>
+
         {% elif page == "monitor_charging" %}
         <div class= "card">
             <h3> Charging status </h3>
-            <div class="item"><span>{{ data }}</span></div>
+            <div class="item">{{ data }}</div>
         </div>
-        <br>
         <br>
         <a href="/vehicle_data">Get full vehicle data</a><br>
 
