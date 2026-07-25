@@ -216,8 +216,14 @@ def monitor_charging():
 
     resp = requests.get(url, headers=headers).json()
 
-    try:
+    if resp.get("error"):
+        charging_message = resp["error"]
+        return render_template(
+            "data.html", data=charging_message, page="monitor_charging"
+        )
+    else:
         amount_charged = resp["response"]["charge_state"]["charge_energy_added"]
+
         if resp["response"]["charge_state"]["charging_state"] == "Stopped":
             charging_message = (
                 f"Charging stopped, currently added:  {amount_charged} kWh."
@@ -239,11 +245,12 @@ def monitor_charging():
             charging_message = (
                 f"Still charging, currently added:  {amount_charged} kWh."
             )
+
             return render_template(
                 "data.html", data=charging_message, page="monitor_charging"
             )
-    except KeyError:
-        return resp
+    # except KeyError:
+    #     return resp
     # except TypeError:
     #     return resp
 
