@@ -218,8 +218,9 @@ def monitor_charging():
 
     if resp.get("error"):
         charging_message = resp["error"]
+
         return render_template(
-            "data.html", data=charging_message, page="monitor_charging"
+            "data.html", data=charging_message, page="vehicle_unavailable"
         )
     else:
         amount_charged = resp["response"]["charge_state"]["charge_energy_added"]

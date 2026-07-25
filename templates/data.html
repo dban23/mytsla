@@ -40,6 +40,12 @@
             <h3> Charging status </h3>
             <div class="item">{{ data }}</div>
         </div>
+
+        {% elif page == "vehicle_unavailable" %}
+        <div class= "card">
+            <h3> Wake up your car </h3>
+            <div class="item">{{ data }}</div>
+        </div>
         <br>
         <a href="/vehicle_data">Get full vehicle data</a><br>
 
