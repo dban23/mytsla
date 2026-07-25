@@ -80,7 +80,7 @@ def callback():
 
 @app.route("/session")
 def ses():
-    return session
+    return jsonify(dict(session))
 
 
 @app.route("/me")
