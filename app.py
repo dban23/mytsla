@@ -244,8 +244,8 @@ def monitor_charging():
             )
     except KeyError:
         return resp
-    except TypeError:
-        return resp
+    # except TypeError:
+    #     return resp
 
 
 @app.route("/drivers")
