@@ -106,7 +106,8 @@ def charging():
     }
 
     resp = requests.get(url, headers=headers).json()
-    return resp
+
+    return render_template("data.html", data=resp["data"], page="charging")
 
 
 @app.route("/my_vehicles")

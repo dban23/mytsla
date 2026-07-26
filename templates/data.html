@@ -35,6 +35,30 @@
             <div class="item">VIN: <span>{{ data[0].vin }}</span></div>
         </div>
 
+        {% elif page == "charging" %}
+        <div id="SUC"></div>
+
+        <script>
+            const charge_data = {{ data | tojson }};
+            const container = document.getElementById("SUC");
+
+            charge_data.data.forEach(charge => {
+                const newLink = document.createElement("a");
+                const chargingDate = charge.chargeStartDateTime.slice(0,16).replaceAll('-', '. ').replace(/t/i, '. - ')
+
+                newLink.className = "card-charging-link";
+                newLink.href = "/"
+                newLink.innerHTML = `
+                    <div class="card">
+                        <h3>${chargingDate}</h3>
+                        <span>${charge.siteLocationName}</span>
+                    </div>
+                `;
+                container.appendChild(newLink);
+            });
+
+        </script>
+
         {% elif page == "monitor_charging" %}
         <div class= "card">
             <h3> Charging status </h3>

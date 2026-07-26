@@ -5,13 +5,17 @@ body {
 .card {
     background: #b3ffb3;
     padding: 20px;
-    border-radius: 10px;
+    padding-top: 5px;
+    border-radius: 40px;
     width: 300px;
     font-family: Arial;
+    margin: 20px 0;
 }
+
 .item {
     margin: 10px 0;
 }
+
 .item span {
     font-weight: bold;
 }
