@@ -42,9 +42,9 @@
             const charge_data = {{ data | tojson }};
             const container = document.getElementById("SUC");
 
-            charge_data.data.forEach(charge => {
+            charge_data.forEach(charge => {
                 const newLink = document.createElement("a");
-                const chargingDate = charge.chargeStartDateTime.slice(0,16).replaceAll('-', '. ').replace(/t/i, '. - ')
+                const chargingDate = charge.chargeStartDateTime.slice(0,16).replaceAll('-', '. ').replace(/t/i, '. - ');
 
                 newLink.className = "card-charging-link";
                 newLink.href = "/"
