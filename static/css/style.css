@@ -12,6 +12,20 @@ body {
     margin: 20px 0;
 }
 
+.card-charging-link {
+    display: block;
+    width: 200px;
+    background: #004d4d;
+    padding: 20px;
+    padding-top: 5px;
+    border-radius: 50px;
+    font-family: Arial;
+    margin: 20px 0;
+    cursor: default;
+    color: white;
+    text-decoration: none;
+}
+
 .item {
     margin: 10px 0;
 }
