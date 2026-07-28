@@ -4,7 +4,7 @@ body {
 }
 
 .card {
-    background: #b3ffb3;
+    background: #44AFFC;
     padding: 20px;
     padding-top: 5px;
     border-radius: 40px;
@@ -26,10 +26,17 @@ body {
     color: white;
     text-decoration: none;
     text-align: center;
+    transition: transform 0.2s ease, box-shadow: 0.2s ease;
+}
+
+.card-charging-link:hover {
+    transform: scale(1.03);
+    box-shadow: 4px 4px 12px rgba(0,0,0,1);
 }
 
 .links {
-    color: #44AFFC;
+    /* color: #44AFFC; */
+    color: #024E85;
 }
 
 .item {
