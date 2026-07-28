@@ -1,5 +1,6 @@
 body {
-    background-color #003300;
+    background-color: #011E33;
+    color: white;
 }
 
 .card {
@@ -14,16 +15,21 @@ body {
 
 .card-charging-link {
     display: block;
-    width: 200px;
-    background: #004d4d;
-    padding: 20px;
-    padding-top: 5px;
+    width: 300px;
+    background: #44AFFC;
+    padding-bottom: 10px;
+    padding-top: 1px;
     border-radius: 50px;
     font-family: Arial;
     margin: 20px 0;
-    cursor: default;
+    /* cursor: default; */
     color: white;
     text-decoration: none;
+    text-align: center;
+}
+
+.links {
+    color: #44AFFC;
 }
 
 .item {
