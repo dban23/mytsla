@@ -2,3 +2,6 @@
 stopped.json
 main.py
 test.py
+__pycache__
+templates/style.css
+templates/test.html

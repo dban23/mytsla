@@ -244,6 +244,113 @@ def drivers():
     return render_template("data.html", data=driver_resp, page="drivers")
 
 
+@app.route("/recent_alerts")
+def recent_alerts():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/recent_alerts"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    alerts_resp = requests.get(url, headers=headers).json()
+
+    return alerts_resp
+    # return render_template("data.html", data=alerts_resp, page="alerts")
+
+
+@app.route("/release_notes")
+def release_notes():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/release_notes"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    release_notes_resp = requests.get(url, headers=headers).json()
+
+    return release_notes_resp
+
+
+@app.route("/service_data")
+def service_data():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/service_data"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    service_data_resp = requests.get(url, headers=headers).json()
+
+    return service_data_resp
+
+
+@app.route("/options")
+def options():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/dx/vehicles/options?vin={vin}"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    options_resp = requests.get(url, headers=headers).json()
+
+    return options_resp
+
+
+@app.route("/specs")
+def specs():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/specs"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    specs_resp = requests.get(url, headers=headers).json()
+
+    return specs_resp
+
+
+@app.route("/warranty")
+def warranty():
+    access_token = session.get("access_token")
+    if not access_token:
+        return redirect(url_for("login"))
+
+    url = f"{TESLA_AUDIENCE}/api/1/dx/warranty/details"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    warranty_resp = requests.get(url, headers=headers).json()
+
+    return warranty_resp
+
+
 # @app.route("/refresh")
 # def refresh():
 #     refresh_token = session.get("refresh_token")
