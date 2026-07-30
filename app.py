@@ -341,7 +341,9 @@ def warranty():
     if not access_token:
         return redirect(url_for("login"))
 
-    url = f"{TESLA_AUDIENCE}/api/1/dx/warranty/details"
+    vin = get_vin()
+
+    url = f"{TESLA_AUDIENCE}/api/1/dx/warranty/details?vin={vin}"
     headers = {
         "Authorization": f"Bearer {access_token}",
     }
