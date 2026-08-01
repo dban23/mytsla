@@ -42,7 +42,8 @@ body {
 }
 
 .links {
-    color: #44AFFC;
+    color: white;
+    text-decoration: none;
 }
 
 .item {
