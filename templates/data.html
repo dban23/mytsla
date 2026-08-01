@@ -20,29 +20,41 @@
         </div>
 
         {% elif page == "drivers" %}
-        <div class="card">
-            <h3> Drivers info </h3>
-            <div class="item">First Name: <span>{{ data.response[0].driver_first_name }}</span></div>
-            <div class="item">Last Name: <span>{{ data.response[0].driver_last_name }}</span></div>
-            <div class="item">User ID: <span>{{ data.response[0].user_id }}</span></div>
-        </div>
+        <h3> Drivers info </h3>
+        <div id="drivers"></div>
+
+        <script>
+            const drivers = {{ data | tojson }};
+            const driversContainer = document.getElementById("drivers");
+
+            drivers.response.forEach( driver => {
+                const driversDiv = document.createElement("div");
+                driversDiv.className = "card";
+                driversDiv.innerHTML = `
+                    <div class="item">First Name: <span>${driver.driver_first_name}</span></div>
+                    <div class="item">Last Name: <span>${driver.driver_last_name}</span></div>
+                    <div class="item">User ID: <span>${driver.user_id}</span></div>
+                `;
+                driversContainer.appendChild(driversDiv);
+            });
+        </script>
 
         {% elif page == "my_vehicles" %}
         <h3> My vehicles </h3>
         <div id="vehicles"></div>
         <script>
             const vehicleData = {{ data | tojson }};
-            const container = document.getElementById("vehicles");
+            const vehicleContainer = document.getElementById("vehicles");
 
             vehicleData.forEach( vehicle => {
-                const div = document.createElement("div");
-                div.className = "card";
-                div.innerHtml = `
+                const vehicleDiv = document.createElement("div");
+                vehicleDiv.className = "card";
+                vehicleDiv.innerHTML = `
                     <div class="item">Display name: <span>${vehicle.display_name}</span></div>
                     <div class="item">Vehicle ID: <span>${vehicle.vehicle_id}</span></div>
                     <div class="item">VIN: <span>${vehicle.vin}</span></div>
                 `;
-                container.appendChild(div);
+                vehicleContainer.appendChild(vehicleDiv);
             });
         </script>
 
@@ -50,7 +62,7 @@
         <div id="SUC"></div>
         <script>
             const charge_data = {{ data | tojson }};
-            const container = document.getElementById("SUC");
+            const sucContainer = document.getElementById("SUC");
 
             charge_data.forEach(charge => {
                 const newLink = document.createElement("a");
@@ -64,7 +76,7 @@
                         <span>${charge.siteLocationName}</span>
                     </div>
                 `;
-                container.appendChild(newLink);
+                sucContainer.appendChild(newLink);
             });
         </script>
 
