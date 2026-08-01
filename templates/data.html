@@ -9,9 +9,6 @@
   </head>
   <body>
     <h1>Crna strijela</h1>
-        <p>My page for using Tesla Fleet API.</p>
-        <br>
-
         {% if page == "me" %}
         <h3> Owner info </h3>
         <div class="card">
@@ -59,7 +56,7 @@
         </script>
 
         {% elif page == "charging" %}
-        <div class="suc" id="SUC"></div>
+        <div class="responsive-div" id="SUC"></div>
         <script>
             const charge_data = {{ data | tojson }};
             const sucContainer = document.getElementById("SUC");

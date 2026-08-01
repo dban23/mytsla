@@ -34,7 +34,7 @@ body {
     box-shadow: 4px 4px 12px rgba(0,0,0,1);
 }
 
-.suc {
+.responsive-div {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
     gap: 20px;
