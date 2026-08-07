@@ -1,7 +1,8 @@
 .env
+myt/
+__pycache__/
+templates/style.css
+templates/test.html
 stopped.json
 main.py
 test.py
-__pycache__
-templates/style.css
-templates/test.html
