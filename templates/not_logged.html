@@ -7,8 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   </head>
   <body>
-    <h1>Crna strijela</h1>
-    <p>You are not logged in.</p>
-    <a href="/login" class="links">Login with Tesla</a>
+    <img src="{{ url_for('static', filename='images/mytsla.png') }}" alt="MyTsla logo" class="logo">
+    <div class="login">
+        <h2>Login to see your car details!</h2>
+        <p>You will be redirected to official Tesla page for authentification.</p>
+        <button class="tesla_login">Login</button>
+    </div>
   </body>
 </html>
