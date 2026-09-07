@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crna strijela</title>
+    <title>MyTsla</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   </head>
   <body>
-    <h1>Crna strijela</h1>
+    <img src="{{ url_for('static', filename='images/mytsla.png') }}" alt="MyTsla logo" class="logo">
     <div class="responsive-div">
         <div class="card">
             <h3>Basic info</h3>
@@ -37,8 +37,6 @@
         </div>
     </div>
 
-    <br>
-    <br>
-    <a href="/logout" class="links">Logout</a>
+    <button class="tesla_login" onclick="window.location.href='/logout'">Logout</button>
   </body>
 </html>

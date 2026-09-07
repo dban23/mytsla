@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crna strijela</title>
+    <title>MyTsla</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   </head>
   <body>
     <img src="{{ url_for('static', filename='images/mytsla.png') }}" alt="MyTsla logo" class="logo">
-    <div class="login">
+    <div class="login_text">
         <h2>Login to see your car details!</h2>
         <p>You will be redirected to official Tesla page for authentification.</p>
-        <button class="tesla_login" onclick="window.location.href='/login'">Login</button>
     </div>
+    <button class="tesla_login" onclick="window.location.href='/login'">Login</button>
   </body>
 </html>

@@ -3,6 +3,13 @@ body {
     color: white;
 }
 
+.logo {
+    max-height: 200px;
+    width: auto;
+    display: block;
+    margin: -30px auto 0;
+}
+
 .card {
     background: #44AFFC;
     padding: 20px;
@@ -36,9 +43,10 @@ body {
 
 .responsive-div {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    justify-items: center;
     gap: 20px;
-    margin: 0 auto;
+    margin: -50px auto 50px;
 }
 
 .links {
@@ -54,13 +62,14 @@ body {
     font-weight: bold;
 }
 
-.login {
+.login_text {
     width: 500px;
-    margin: -80px auto;
+    margin: -50px auto 80px;
     text-align: center;
     font-family: Arial;
 }
 
+/* login/logout buttons style start */
 .tesla_login {
     --animate_direction: translateY(0%) translateX(-100%);
     --color: #fff;
@@ -83,7 +92,7 @@ body {
     align-items: center;
     transition: color 0.3s;
     width: 35%;
-    margin: 80px auto;
+    margin: 40px auto;
 }
 
 .tesla_login::before {
@@ -106,9 +115,39 @@ body {
 .tesla_login:hover {
     color: #fff;
 }
+/* login/logout buttons style end */
 
-.logo {
-    width: 350px;
+/* other buttons style start */
+.buttons {
+    --color: #FFF;
+    --slide_bg_color: #011E33;
+    border: 2px solid #44AFFC;
+    padding: 10px 12px;
+    background-color: #44AFFC;
+    color: var(--color);
+    font-size: 20px;
+    z-index: 1;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+    font-family: Arial;
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
     display: block;
-    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    transition: color 0.3s;
+    width: 35%;
+    margin: 10px auto;
 }
+
+.buttons:hover {
+    transform: scale(1.03);
+    box-shadow: 4px 4px 12px rgba(0,0,0,1);
+}
+
+.buttons:hover {
+    color: #fff;
+}
+/* other buttons style end */
