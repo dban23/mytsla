@@ -56,6 +56,24 @@
             });
         </script>
 
+        {% elif page == "options" %}
+        <h3>Options</h3>
+        <div id="options"></div>
+        <script>
+            const optionsData = {{ data | tojson }};
+            const optionsContainer = document.getElementById("options");
+
+            optionsData.forEach( options => {
+                const optionsDiv = document.createElement("div");
+                optionsDiv.className = "card";
+                optionsDiv.innerHTML = `
+                    <div class="item"><span>${options.displayName}</span></div>
+                    <div class="item">Active: <span>${options.isActive}</span></div>
+                `;
+                optionsContainer.appendChild(optionsDiv);
+            });
+        </script>
+
         {% elif page == "charging" %}
         <div class="responsive-div" id="SUC"></div>
         <script>

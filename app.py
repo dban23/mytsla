@@ -314,7 +314,17 @@ def options():
 
     options_resp = requests.get(url, headers=headers).json()
 
-    return options_resp
+    codes = options_resp["codes"]
+    options = []
+
+    for i in range(len(codes)):
+        each_option = {
+            "displayName": codes[i]["displayName"],
+            "isActive": codes[i]["isActive"],
+        }
+        options.append(each_option)
+
+    return render_template("data.html", data=options, page="options")
 
 
 @app.route("/specs")
