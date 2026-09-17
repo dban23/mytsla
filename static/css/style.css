@@ -180,3 +180,10 @@ body {
     color: #fff;
 }
 /* other buttons style end */
+
+
+.titles {
+    text-align: center;
+    margin: 0 auto 70px;
+    font-family: Arial;
+}

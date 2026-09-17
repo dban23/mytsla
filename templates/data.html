@@ -11,14 +11,14 @@
         <img src="{{ url_for('static', filename='images/mytsla.png') }}" alt="MyTsla logo" class="logo">
 
         {% if page == "me" %}
-        <h3> Owner info </h3>
+        <h2 class="titles"> Owner info </h2>
         <div class="card">
             <div class="item">Full Name: <span>{{ data.response.full_name }}</span></div>
             <div class="item">E-mail: <span>{{ data.response.email }}</span></div>
         </div>
 
         {% elif page == "drivers" %}
-        <h3> Drivers info </h3>
+        <h2 class="titles"> Drivers info </h2>
         <div id="drivers"></div>
 
         <script>
@@ -38,7 +38,7 @@
         </script>
 
         {% elif page == "my_vehicles" %}
-        <h3> My vehicles </h3>
+        <h2 class="titles"> My vehicles </h2>
         <div id="vehicles"></div>
         <script>
             const vehicleData = {{ data | tojson }};
@@ -57,8 +57,8 @@
         </script>
 
         {% elif page == "options" %}
-        <h3>Options</h3>
-        <div id="options"></div>
+        <h2 class="titles">Options</h2>
+        <div id="options" class="responsive-div"></div>
         <script>
             const optionsData = {{ data | tojson }};
             const optionsContainer = document.getElementById("options");
@@ -75,6 +75,7 @@
         </script>
 
         {% elif page == "charging" %}
+        <h2 class="titles">Supercharging sessions</h2>
         <div class="responsive-div" id="SUC"></div>
         <script>
             const charge_data = {{ data | tojson }};
@@ -98,13 +99,13 @@
 
         {% elif page == "monitor_charging" %}
         <div class= "card">
-            <h3> Charging status </h3>
+            <h2 class="titles"> Charging status </h2>
             <div class="item">{{ data }}</div>
         </div>
 
         {% elif page == "vehicle_unavailable" %}
+        <h2 class="titles"> Wake up your car </h2>
         <div class= "card">
-            <h3> Wake up your car </h3>
             <div class="item">{{ data }}</div>
         </div>
         <button class="buttons" onclick="window.location.href='/vehicle_data'">Get full vehicle data</button>
