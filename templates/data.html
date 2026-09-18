@@ -133,6 +133,12 @@
         </div>
         <button class="buttons" onclick="window.location.href='/vehicle_data'">Get full vehicle data</button>
 
+        {% elif page == "error" %}
+        <h2 class="titles"> Tesla API error </h2>
+        <div class= "card">
+            <div class="item">{{ data }}</div>
+        </div>
+
         {% else %}
             <p> Unknown page </p>
         {% endif %}

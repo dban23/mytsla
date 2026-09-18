@@ -19,6 +19,40 @@ TESLA_AUDIENCE = os.getenv("TESLA_AUDIENCE")
 TESLA_SCOPES = os.getenv("TESLA_SCOPES")
 
 
+class TeslaAPIError(Exception):
+    def __init__(self, message, status_code=502):
+        super().__init__(message)
+        self.message = message
+        self.status_code = status_code
+
+
+def api_get(path):
+    resp = requests.get(
+        f"{TESLA_AUDIENCE}{path}",
+        headers={"Authorization": f"Bearer {session['access_token']}"},
+    )
+    try:
+        data = resp.json()
+    except ValueError:
+        raise TeslaAPIError(
+            f"Invalid response from Tesla (HTTP {resp.status_code})", resp.status_code
+        )
+    if resp.status_code != 200 or (isinstance(data, dict) and data.get("error")):
+        msg = (
+            data.get("error_description")
+            or data.get("message")
+            or data.get("error")
+            or f"HTTP {resp.status_code}"
+        )
+        raise TeslaAPIError(msg, resp.status_code)
+    return data
+
+
+@app.errorhandler(TeslaAPIError)
+def handle_tesla_api_error(err):
+    return render_template("data.html", data=err.message, page="error"), err.status_code
+
+
 @app.route("/")
 def index():
     access_token = session.get("access_token")
@@ -84,14 +118,7 @@ def me():
     if not access_token:
         return redirect(url_for("login"))
 
-    url = f"{TESLA_AUDIENCE}/api/1/users/me"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    me_resp = requests.get(url, headers=headers).json()
-
-    return render_template("data.html", data=me_resp, page="me")
+    return render_template("data.html", data=api_get("/api/1/users/me"), page="me")
 
 
 @app.route("/charging")
@@ -100,14 +127,9 @@ def charging():
     if not access_token:
         return redirect(url_for("login"))
 
-    url = f"{TESLA_AUDIENCE}/api/1/dx/charging/history"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    resp = requests.get(url, headers=headers).json()
-
-    return render_template("data.html", data=resp["data"], page="charging")
+    return render_template(
+        "data.html", data=api_get("/api/1/dx/charging/history")["data"], page="charging"
+    )
 
 
 @app.route("/my_vehicles")
@@ -116,14 +138,7 @@ def get_my_vehicles():
     if not access_token:
         return redirect(url_for("login"))
 
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    json_resp = requests.get(url, headers=headers).json()
-
-    resp = json_resp["response"]
+    resp = api_get("/api/1/vehicles")["response"]
     vehicle_data = []
 
     for i in range(len(resp)):
@@ -143,12 +158,7 @@ def get_vin():
     if not access_token:
         return redirect(url_for("login"))
 
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    resp = requests.get(url, headers=headers).json()
+    resp = api_get("/api/1/vehicles")
 
     try:
         vin = resp["response"][0]["vin"]
@@ -163,16 +173,7 @@ def vehicle_data():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/vehicle_data"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    resp = requests.get(url, headers=headers).json()
-
-    return resp
+    return api_get(f"/api/1/vehicles/{get_vin()}/vehicle_data")
 
 
 @app.route("/monitor_charging")
@@ -181,49 +182,40 @@ def monitor_charging():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/vehicle_data"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    resp = requests.get(url, headers=headers).json()
-
-    if resp.get("error"):
-        charging_message = resp["error"]
-
+    try:
+        resp = api_get(f"/api/1/vehicles/{get_vin()}/vehicle_data")
+    except TeslaAPIError as err:
         return render_template(
-            "data.html", data=charging_message, page="vehicle_unavailable"
+            "data.html", data=err.message, page="vehicle_unavailable"
+        )
+
+    amount_charged = resp["response"]["charge_state"]["charge_energy_added"]
+
+    if resp["response"]["charge_state"]["charging_state"] == "Stopped":
+        charging_message = (
+            f"Charging stopped, currently added:  {amount_charged} kWh."
+        )
+        return render_template(
+            "data.html", data=charging_message, page="monitor_charging"
+        )
+    elif resp["response"]["charge_state"]["charging_state"] == "Complete":
+        charging_message = f"Charging finished, added:  {amount_charged} kWh."
+        return render_template(
+            "data.html", data=charging_message, page="monitor_charging"
+        )
+    elif resp["response"]["charge_state"]["charging_state"] == "Disconnected":
+        charging_message = "The car is not charging."
+        return render_template(
+            "data.html", data=charging_message, page="monitor_charging"
         )
     else:
-        amount_charged = resp["response"]["charge_state"]["charge_energy_added"]
+        charging_message = (
+            f"Still charging, currently added:  {amount_charged} kWh."
+        )
 
-        if resp["response"]["charge_state"]["charging_state"] == "Stopped":
-            charging_message = (
-                f"Charging stopped, currently added:  {amount_charged} kWh."
-            )
-            return render_template(
-                "data.html", data=charging_message, page="monitor_charging"
-            )
-        elif resp["response"]["charge_state"]["charging_state"] == "Complete":
-            charging_message = f"Charging finished, added:  {amount_charged} kWh."
-            return render_template(
-                "data.html", data=charging_message, page="monitor_charging"
-            )
-        elif resp["response"]["charge_state"]["charging_state"] == "Disconnected":
-            charging_message = "The car is not charging."
-            return render_template(
-                "data.html", data=charging_message, page="monitor_charging"
-            )
-        else:
-            charging_message = (
-                f"Still charging, currently added:  {amount_charged} kWh."
-            )
-
-            return render_template(
-                "data.html", data=charging_message, page="monitor_charging"
-            )
+        return render_template(
+            "data.html", data=charging_message, page="monitor_charging"
+        )
 
 
 @app.route("/drivers")
@@ -232,14 +224,7 @@ def drivers():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/drivers"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    driver_resp = requests.get(url, headers=headers).json()
+    driver_resp = api_get(f"/api/1/vehicles/{get_vin()}/drivers")
 
     return render_template("data.html", data=driver_resp, page="drivers")
 
@@ -250,16 +235,7 @@ def recent_alerts():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/recent_alerts"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    alerts_resp = requests.get(url, headers=headers).json()
-
-    return alerts_resp
+    return api_get(f"/api/1/vehicles/{get_vin()}/recent_alerts")
     # return render_template("data.html", data=alerts_resp, page="alerts")
 
 
@@ -269,16 +245,7 @@ def release_notes():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/release_notes"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    release_notes_resp = requests.get(url, headers=headers).json()
-
-    return release_notes_resp
+    return api_get(f"/api/1/vehicles/{get_vin()}/release_notes")
 
 
 @app.route("/service_data")
@@ -287,16 +254,7 @@ def service_data():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/service_data"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    service_data_resp = requests.get(url, headers=headers).json()
-
-    return service_data_resp
+    return api_get(f"/api/1/vehicles/{get_vin()}/service_data")
 
 
 @app.route("/options")
@@ -305,14 +263,7 @@ def options():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/dx/vehicles/options?vin={vin}"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    options_resp = requests.get(url, headers=headers).json()
+    options_resp = api_get(f"/api/1/dx/vehicles/options?vin={get_vin()}")
 
     codes = options_resp["codes"]
     options = []
@@ -333,16 +284,7 @@ def specs():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/vehicles/{vin}/specs"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    specs_resp = requests.get(url, headers=headers).json()
-
-    return specs_resp
+    return api_get(f"/api/1/vehicles/{get_vin()}/specs")
 
 
 @app.route("/warranty")
@@ -351,14 +293,7 @@ def warranty():
     if not access_token:
         return redirect(url_for("login"))
 
-    vin = get_vin()
-
-    url = f"{TESLA_AUDIENCE}/api/1/dx/warranty/details?vin={vin}"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-    }
-
-    warranty_resp = requests.get(url, headers=headers).json()
+    warranty_resp = api_get(f"/api/1/dx/warranty/details?vin={get_vin()}")
 
     active_warranty = warranty_resp["activeWarranty"]
 
