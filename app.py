@@ -360,7 +360,24 @@ def warranty():
 
     warranty_resp = requests.get(url, headers=headers).json()
 
-    return warranty_resp
+    active_warranty = warranty_resp["activeWarranty"]
+    expired_warranty = warranty_resp["expiredWarranty"]
+    upcoming_warranty = warranty_resp["upcomingWarranty"]
+
+    warranty = []
+
+    for i in range(len(active_warranty)):
+        warranty_option = {
+            "warrantyDisplayName": active_warranty[i]["warrantyDisplayName"],
+            "coverageAgeInYears": active_warranty[i]["coverageAgeInYears"],
+            "expirationDate": active_warranty[i]["expirationDate"],
+            "expirationOdometer": active_warranty[i]["expirationOdometer"],
+            "odometerUnit": active_warranty[i]["odometerUnit"],
+            "warrantyExpiredOn": active_warranty[i]["warrantyExpiredOn"],
+        }
+        warranty.append(warranty_option)
+
+    return render_template("data.html", data=warranty, page="warranty")
 
 
 # @app.route("/refresh")

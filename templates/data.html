@@ -74,6 +74,31 @@
             });
         </script>
 
+        {% elif page == "warranty" %}
+        <h2 class="titles">Warranty</h2>
+        <div id="warranty" class="responsive-div"></div>
+        <script>
+            const warrantyData = {{ data | tojson }};
+            const warrantyContainer = document.getElementById("warranty");
+
+            warrantyData.forEach( warranty => {
+                const warrantyDiv = document.createElement("div");
+                const expirationDateFormated = warranty.expirationDate.slice(0,16).replaceAll('-', '. ').replace(/t/i, '. - ');
+                warrantyDiv.className = "card";
+                warrantyDiv.innerHTML = `
+                    <div class="item"><span>${warranty.warrantyDisplayName}</span></div>
+                    <br>
+                    <div class="item">Length: <span>${warranty.coverageAgeInYears} Years</span></div>
+                    <div class="item">Expires on: <span>${expirationDateFormated}</span></div>
+                    <div class="item">Expires after: <span>${warranty.expirationOdometer}</span></div>
+                    <div class="item">Odometer unit: <span>${warranty.odometerUnit}</span></div>
+                    <br>
+                    <div class="item">Expired on: <span>${warranty.warrantyExpiredOn}</span></div>
+                `;
+                warrantyContainer.appendChild(warrantyDiv);
+            });
+        </script>
+
         {% elif page == "charging" %}
         <h2 class="titles">Supercharging sessions</h2>
         <div class="responsive-div" id="SUC"></div>
