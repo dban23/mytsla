@@ -361,6 +361,7 @@ def warranty():
     warranty_resp = requests.get(url, headers=headers).json()
 
     active_warranty = warranty_resp["activeWarranty"]
+
     expired_warranty = warranty_resp["expiredWarranty"]
     upcoming_warranty = warranty_resp["upcomingWarranty"]
 

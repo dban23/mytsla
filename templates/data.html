@@ -88,10 +88,8 @@
                 warrantyDiv.innerHTML = `
                     <div class="item"><span>${warranty.warrantyDisplayName}</span></div>
                     <br>
-                    <div class="item">Length: <span>${warranty.coverageAgeInYears} Years</span></div>
+                    <div class="item">Length: <span>${warranty.coverageAgeInYears} Years or ${warranty.expirationOdometer} ${warranty.odometerUnit}</span></div>
                     <div class="item">Expires on: <span>${expirationDateFormated}</span></div>
-                    <div class="item">Expires after: <span>${warranty.expirationOdometer}</span></div>
-                    <div class="item">Odometer unit: <span>${warranty.odometerUnit}</span></div>
                     <br>
                     <div class="item">Expired on: <span>${warranty.warrantyExpiredOn}</span></div>
                 `;
