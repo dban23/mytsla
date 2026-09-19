@@ -1,5 +1,6 @@
 import os
 import urllib.parse
+from functools import wraps
 from flask import Flask, redirect, request, session, url_for, render_template
 import requests
 import secrets
@@ -46,6 +47,15 @@ def api_get(path):
         )
         raise TeslaAPIError(msg, resp.status_code)
     return data
+
+
+def login_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if not session.get("access_token"):
+            return redirect(url_for("login"))
+        return fn(*args, **kwargs)
+    return wrapper
 
 
 @app.errorhandler(TeslaAPIError)
@@ -113,31 +123,22 @@ def callback():
 
 
 @app.route("/me")
+@login_required
 def me():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     return render_template("data.html", data=api_get("/api/1/users/me"), page="me")
 
 
 @app.route("/charging")
+@login_required
 def charging():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     return render_template(
         "data.html", data=api_get("/api/1/dx/charging/history")["data"], page="charging"
     )
 
 
 @app.route("/my_vehicles")
+@login_required
 def get_my_vehicles():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     resp = api_get("/api/1/vehicles")["response"]
     vehicle_data = []
 
@@ -153,11 +154,8 @@ def get_my_vehicles():
 
 
 @app.route("/vin")
+@login_required
 def get_vin():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     resp = api_get("/api/1/vehicles")
 
     try:
@@ -168,20 +166,14 @@ def get_vin():
 
 
 @app.route("/vehicle_data")
+@login_required
 def vehicle_data():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     return api_get(f"/api/1/vehicles/{get_vin()}/vehicle_data")
 
 
 @app.route("/monitor_charging")
+@login_required
 def monitor_charging():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     try:
         resp = api_get(f"/api/1/vehicles/{get_vin()}/vehicle_data")
     except TeslaAPIError as err:
@@ -219,50 +211,35 @@ def monitor_charging():
 
 
 @app.route("/drivers")
+@login_required
 def drivers():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     driver_resp = api_get(f"/api/1/vehicles/{get_vin()}/drivers")
 
     return render_template("data.html", data=driver_resp, page="drivers")
 
 
 @app.route("/recent_alerts")
+@login_required
 def recent_alerts():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     return api_get(f"/api/1/vehicles/{get_vin()}/recent_alerts")
     # return render_template("data.html", data=alerts_resp, page="alerts")
 
 
 @app.route("/release_notes")
+@login_required
 def release_notes():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     return api_get(f"/api/1/vehicles/{get_vin()}/release_notes")
 
 
 @app.route("/service_data")
+@login_required
 def service_data():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     return api_get(f"/api/1/vehicles/{get_vin()}/service_data")
 
 
 @app.route("/options")
+@login_required
 def options():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     options_resp = api_get(f"/api/1/dx/vehicles/options?vin={get_vin()}")
 
     codes = options_resp["codes"]
@@ -279,20 +256,14 @@ def options():
 
 
 @app.route("/specs")
+@login_required
 def specs():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     return api_get(f"/api/1/vehicles/{get_vin()}/specs")
 
 
 @app.route("/warranty")
+@login_required
 def warranty():
-    access_token = session.get("access_token")
-    if not access_token:
-        return redirect(url_for("login"))
-
     warranty_resp = api_get(f"/api/1/dx/warranty/details?vin={get_vin()}")
 
     active_warranty = warranty_resp["activeWarranty"]
