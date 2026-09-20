@@ -31,16 +31,16 @@ def register_routes(app):
         options_resp = api_get(f"/api/1/dx/vehicles/options?vin={get_vin()}")
 
         codes = options_resp["codes"]
-        options = []
+        options_list = []
 
         for i in range(len(codes)):
             each_option = {
                 "displayName": codes[i]["displayName"],
                 "isActive": codes[i]["isActive"],
             }
-            options.append(each_option)
+            options_list.append(each_option)
 
-        return render_template("data.html", data=options, page="options")
+        return render_template("data.html", data=options_list, page="options")
 
     # this endpoint is not working as expected - opened ticket on Tesla dev portal
     # @app.route("/specs")
@@ -58,7 +58,7 @@ def register_routes(app):
         expired_warranty = warranty_resp["expiredWarranty"]
         upcoming_warranty = warranty_resp["upcomingWarranty"]
 
-        warranty = []
+        warranty_list = []
 
         for i in range(len(active_warranty)):
             warranty_option = {
@@ -69,7 +69,6 @@ def register_routes(app):
                 "odometerUnit": active_warranty[i]["odometerUnit"],
                 "warrantyExpiredOn": active_warranty[i]["warrantyExpiredOn"],
             }
-            warranty.append(warranty_option)
+            warranty_list.append(warranty_option)
 
-        return render_template("data.html", data=warranty, page="warranty")
-
+        return render_template("data.html", data=warranty_list, page="warranty")
