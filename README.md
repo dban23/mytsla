@@ -9,7 +9,7 @@ MyTsla is a Flask web application that lets you sign in with your Tesla account 
 - **Vehicles** – List of vehicles with display name, vehicle ID, and VIN
 - **Additional drivers** – All drivers registered to your vehicle
 - **Charging** – Supercharger charging history and a live charging monitor (`Stopped`, `Complete`, `Disconnected`, or in-progress kWh)
-- **Car data** – Trim/option codes, specs, and warranty details resolved by VIN
+- **Car data** – Trim/option codes and warranty details resolved by VIN
 - **Service** – Service data, recent alerts, and release notes
 - **Full vehicle data** – Raw vehicle data response
 
@@ -23,14 +23,21 @@ MyTsla is a Flask web application that lets you sign in with your Tesla account 
 ## Project structure
 
 ```
-.
-├── app.py                  # Flask application entry point
-├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables (SECRET) – not committed
+├── app.py                  # Flask entry point – creates the app, wires routes, error handler
+├── config.py               # Loads .env and exposes configuration constants
+├── tesla_client.py         # Tesla Fleet API helpers
+├── routes/
+│   ├── __init__.py
+│   ├── auth.py             # /login, /callback, /logout
+│   ├── profile.py          # /me, /my_vehicles, /drivers, /vin
+│   ├── vehicle.py          # /vehicle_data, /recent_alerts, /release_notes, /service_data, /options, /warranty
+│   └── charging.py         # /charging, /monitor_charging
+├── requirements.txt
+├── .env
 ├── .well-known/
 │   └── appspecific/
 │       └── com.tesla.3p.public-key.pem   # Public key Tesla fetches for domain verification
-├── templates/              # Jinja2 templates (index, data, login, not_logged)
+├── templates/              # Jinja2 templates
 └── static/
     ├── css/style.css       # Stylesheet
     └── images/mytsla.png   # Logo
@@ -117,14 +124,14 @@ MyTsla is a Flask web application that lets you sign in with your Tesla account 
 
    It serves on `http://0.0.0.0:5050`. Open `http://localhost:5050`, click **Login**, and authorize with your Tesla account.
 
-   > **Use the literal `localhost` host.** Open the app at `http://localhost:5050`, not `http://127.0.0.1:5050` or `http://0.0.0.0:5050`. The Flask session cookie is host-scoped, so the host you open must match `TESLA_REDIRECT_URI` exactly — otherwise the callback arrives without the session cookie and you get **"Invalid state"** at `/callback`.
+   > **Use the literal `localhost` host.** Open the app at `http://localhost:5050` for testing. The Flask session cookie is host-scoped, so the host you open must match `TESLA_REDIRECT_URI` exactly - otherwise the callback arrives without the session cookie and you get **"Invalid state"** at `/callback`.
 
 
 ## Deployment (Render)
 
 This project is configured to run on Render with gunicorn:
 
-1. Push the repo to GitHub (the `.gitignore` already excludes `.env`, `myt/`, and `test.py`).
+1. Push the repo to GitHub.
 2. Create a new **Web Service** on Render connected to the repo.
 3. **Build command**: `pip install -r requirements.txt`
 4. **Start command**: `gunicorn app:app`
@@ -143,20 +150,20 @@ This project is configured to run on Render with gunicorn:
 | `/charging`          | Supercharger charging history                                      |
 | `/monitor_charging`  | Live charging state (stopped / complete / disconnected / charging) |
 | `/vehicle_data`      | Raw full vehicle data                       |
+| `/vin`               | VIN of the first vehicle                                          |
 | `/drivers`           | Additional drivers on your vehicle                                 |
 | `/recent_alerts`     | Recent vehicle alerts                                              |
 | `/release_notes`     | Recent software release notes                                      |
 | `/service_data`      | Vehicle service data                                               |
 | `/options`           | Option/trim codes for your VIN                                     |
-| `/specs`             | Vehicle specifications                                             |
 | `/warranty`          | Warranty details for your VIN                                      |
 | `/logout`            | Clears the session and returns to the homepage                     |
 
 ## Security notes
 
 - Access tokens are stored **in the Flask session** (signed with `SECRET_KEY`). Use a strong, random value and rotate it in production.
-- Token refresh is currently **disabled** (see the commented-out `/refresh` route in `app.py`). When a session's access token expires, log in again.
-- The app calls the Fleet API directly with the user's token; no user data is stored on disk long-term.
+- Token refresh is currently **disabled** (see the commented-out `/refresh` route in `routes/auth.py`). When a session's access token expires, log in again.
+- The app calls the Fleet API directly with the user's token so no user data is stored on disk long-term.
 
 ## License
 
